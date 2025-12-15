@@ -77,6 +77,24 @@ public class ProduitDAO {
         return null;
     }
 
+    public Produit getProduitParCode(String codeProduit) {
+        String sql = "SELECT * FROM produits WHERE code_produit = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, codeProduit);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return mapResultSetToProduit(rs);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur récupération produit par code : " + e.getMessage());
+        }
+        return null;
+    }
+
     private Produit mapResultSetToProduit(ResultSet rs) throws SQLException {
         Produit produit = new Produit();
         produit.setIdProduit(rs.getInt("id_produit"));
