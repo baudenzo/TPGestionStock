@@ -1,0 +1,37 @@
+CREATE DATABASE IF NOT EXISTS gestion_stock;
+USE gestion_stock;
+
+-- création de la table des utilisateurs
+CREATE TABLE utilisateurs (
+    id_utilisateur INT PRIMARY KEY AUTO_INCREMENT,
+    nom_utilisateur VARCHAR(50) UNIQUE NOT NULL,
+    mot_de_passe VARCHAR(255) NOT NULL,
+    est_admin BOOLEAN DEFAULT FALSE,
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- création de la table des produits
+CREATE TABLE produits (
+    id_produit INT PRIMARY KEY AUTO_INCREMENT,
+    code_produit VARCHAR(50) UNIQUE NOT NULL,
+    description_produit TEXT NOT NULL,
+    stock INT NOT NULL DEFAULT 0,
+    stock_securite INT DEFAULT 0,
+    stock_maximum INT NOT NULL,
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT check_stock_positif CHECK (stock >= 0),
+    CONSTRAINT check_stock_max CHECK (stock <= stock_maximum)
+);
+
+-- insertion des utilisateurs par défaut
+INSERT INTO utilisateurs (nom_utilisateur, mot_de_passe, est_admin) VALUES
+('admin', 'admin123', TRUE),
+('utilisateur', 'user123', FALSE);
+
+-- insertion de quelques produits test
+INSERT INTO produits (code_produit, description_produit, stock, stock_securite, stock_maximum) VALUES
+('PROD001', 'Ordinateur portable Dell XPS 15', 25, 10, 100),
+('PROD002', 'Souris sans fil Logitech', 5, 15, 200),
+('PROD003', 'Clavier mécanique RGB', 50, 20, 150),
+('PROD004', 'Écran 27 pouces 4K', 30, 10, 80);
